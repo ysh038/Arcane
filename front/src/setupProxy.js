@@ -5,7 +5,7 @@ module.exports = (app) => {
         "/api/summoners",
         createProxyMiddleware({
             //도메인 api로 호출
-            target: "http://localhost:5000", //통신할 서버의 도메인주소
+            target: "http://52.87.246.119:5000", //통신할 서버의 도메인주소
             changeOrigin: true,
         })
     );
@@ -13,7 +13,7 @@ module.exports = (app) => {
         "/auth",
         createProxyMiddleware({
             //도메인 api로 호출
-            target: "http://localhost:5000", //통신할 서버의 도메인주소
+            target: "http://52.87.246.119:5000", //통신할 서버의 도메인주소
             changeOrigin: true,
         })
     );
@@ -21,7 +21,7 @@ module.exports = (app) => {
         "/post",
         createProxyMiddleware({
             //도메인 api로 호출
-            target: "http://localhost:5000", //통신할 서버의 도메인주소
+            target: "http://52.87.246.119:5000", //통신할 서버의 도메인주소
             changeOrigin: true,
         })
     );
@@ -29,11 +29,10 @@ module.exports = (app) => {
         "/api",
         createProxyMiddleware({
             //도메인 api로 호출
-            target: "http://localhost:5000", //통신할 서버의 도메인주소
+            target: "http://52.87.246.119:5000", //통신할 서버의 도메인주소
             changeOrigin: true,
         })
     );
-
     console.log("프록시 생성 성공");
 };
 

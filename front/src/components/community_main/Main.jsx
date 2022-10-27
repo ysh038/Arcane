@@ -26,7 +26,7 @@ function Main() {
     const [userName, setuserName] = useState("");
 
     let data = []; // 게시물 object 배열
-    const socket = io.connect("http://localhost:5000");
+    const socket = io.connect("http://52.87.246.119:5000");
 
     const newPostDiv = document.getElementsByClassName(style.newPost);
     const tbody = document.getElementsByClassName(style.tbody);

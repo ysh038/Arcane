@@ -3,7 +3,7 @@ import axios from "axios";
 class Riot_API {
     // API_Key는 만료될때마다 바꿔 적어줘야함 (발급 후 24시간 후 만료)
     // Version 업데이트마다 변경해줘야함
-    #Riot_API_Key = "RGAPI-429b916f-9974-4935-8c92-f2b92571f885";
+    #Riot_API_Key = "RGAPI-5110cf32-92d8-4123-920d-ca9c5eb68ef5";
     #Language = "ko_KR";
     #Version = "12.19.1";
     #headers = {
@@ -13,7 +13,7 @@ class Riot_API {
         "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
         "Access-Control-Request-Headers": "content-type",
         "Access-Control-Allow-Origin": true,
-        Origin: "http://localhost:5000/",
+        Origin: "ec2-34-224-39-174.compute-1.amazonaws.com",
         "X-Riot-Token": this.#Riot_API_Key,
     };
 
