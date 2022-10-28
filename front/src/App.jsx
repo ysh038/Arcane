@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import MainDisplay from "./page/main/Main";
-import ChampionListPage from "./page/champion_list/champion_list.jsx";
-import ChampionInfoPage from "./page/champion_info/champion_info.jsx";
+import ChampionListPage from "./page/champion_list/Champion_list.jsx";
+import ChampionInfoPage from "./page/champion_info/Champion_info.jsx";
 import ReactDOM from "react-dom/client";
 import { Routes, Route, BrowserRouter, HashRouter } from "react-router-dom";
 import Search from "./page/search/Search.jsx";
