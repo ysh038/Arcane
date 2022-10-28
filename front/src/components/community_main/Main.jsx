@@ -26,7 +26,9 @@ function Main() {
     const [userName, setuserName] = useState("");
 
     let data = []; // 게시물 object 배열
-    const socket = io.connect("http://3.215.131.222:5000");
+    const socket = io.connect("http://3.215.131.222:5000", {
+        transports: ["websocket"],
+    });
 
     const newPostDiv = document.getElementsByClassName(style.newPost);
     const tbody = document.getElementsByClassName(style.tbody);
@@ -276,7 +278,7 @@ function Main() {
                 newPostDiv[0].removeAttribute("id");
             }
         });
-    }, [newPostDiv, socket, userName]);
+    }, [userName]);
 
     return (
         <div className={style.mainContainer}>

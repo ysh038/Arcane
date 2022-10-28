@@ -11,12 +11,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TokenStorage from "../../db/token";
 import style from "./menu.module.css";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 function Menu() {
     const [isLogin, setLogin] = useState(false);
     const [userName, setuserName] = useState("");
-    const socket = io.connect("http://3.215.131.222:5000");
+    // const socket = io.connect("http://3.215.131.222:5000");
 
     const onClick = (e) => {
         if (isLogin) {
@@ -49,14 +49,14 @@ function Menu() {
         isValidToken();
     }, []);
 
-    useEffect(() => {
-        socket.emit("welcome", userName);
-        socket.on("alert", (data) => {
-            if (data !== userName && data !== "" && userName !== "") {
-                console.log(`${data} is login`);
-            }
-        });
-    }, [socket, userName]);
+    // useEffect(() => {
+    //     socket.emit("welcome", userName);
+    //     socket.on("alert", (data) => {
+    //         if (data !== userName && data !== "" && userName !== "") {
+    //             console.log(`${data} is login`);
+    //         }
+    //     });
+    // }, [socket, userName]);
 
     return (
         <div className={style.menuContainer}>
