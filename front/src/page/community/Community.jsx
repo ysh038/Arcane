@@ -1,6 +1,6 @@
 import style from "./community.module.css";
 import Topbar from "../../components/community_topbar/Topbar.jsx";
-import Main from "../../components/community_main/Main.jsx";
+import Main from "../../components/community_main/main.jsx";
 import Footer from "../../components/community_footer/Footer.jsx";
 import Posting from "../../components/community_posting/Posting.jsx";
 import Read from "../../components/community_read/Read.jsx";
