@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import style from "./signup_main.module.css";
 import { useEffect, useRef, useState } from "react";
@@ -18,8 +18,6 @@ function SignupMain() {
     const showPassword = useRef(null);
     const inputPasswordDiv = useRef(null);
     const signupWrapper = useRef(null);
-
-    const token = new TokenStorage();
 
     // 아래 change함수들은 input값의 변화를 감지하고 변화된 값을 set함수를 통해 저장함
     const changeUsername = async (e) => {

@@ -1,6 +1,6 @@
 import style from "./topbar.module.css";
 import { Link } from "react-router-dom";
-import { AccountCircle } from '@mui/icons-material';
+import { AccountCircle } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import tokenStorage from "../../db/token";
 
@@ -17,11 +17,11 @@ function Topbar() {
         } else {
             setisLogin(false);
         }
-    }
+    };
 
     useEffect(() => {
         loginCheck();
-    }, []);
+    });
 
     return (
         <div className={style.topbarContainer}>
@@ -36,19 +36,17 @@ function Topbar() {
                 </Link>
             </div>
             <div className={style.topbarRight}>
-                {isLogin ? 
+                {isLogin ? (
                     <div className={style.userProfile}>
-                        <AccountCircle
-                            className={style.defaultProfile}
-                        />
+                        <AccountCircle className={style.defaultProfile} />
                     </div>
-                    :
+                ) : (
                     <div className={style.auth}>
                         <Link to="/login" className={style.login}>
                             <span>Login</span>
                         </Link>
                     </div>
-                }
+                )}
             </div>
         </div>
     );

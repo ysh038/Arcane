@@ -1,12 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-    Search,
-    LightMode,
-    DarkMode,
-    Language,
-    AccountCircle,
-} from "@mui/icons-material";
+import { Search, AccountCircle } from "@mui/icons-material";
 import style from "./topbar.module.css";
 import axios from "axios";
 import TokenStorage from "../../db/token";

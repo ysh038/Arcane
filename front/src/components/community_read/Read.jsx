@@ -1,7 +1,7 @@
 import style from "./read.module.css";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import TokenStorage from "../../db/token";
 import { FavoriteBorder, Favorite } from "@mui/icons-material";
@@ -21,23 +21,16 @@ function Read(props) {
     const [view, setView] = useState(0);
     const [date, setDate] = useState("");
     const [username, setName] = useState("");
-    const [user_id, setID] = useState("");
     const [like, setLike] = useState(0);
     const [new_comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
 
-    // const commentWrapper = document.querySelector(
-    //     "." + style["commenttitle"]
-    // );
-    //const deleteDiv = document.querySelector("." + style["delete"]);
-    const likeDiv = useRef(null);
     const deleteDiv = useRef(null);
     const commentWrapper = useRef(null);
     const correctDiv = useRef(null);
     const id = useLocation(); //navigate의 option값으로 받아온 유저 id를 담은 객체
 
     const findWriter = async () => {
-        await setID(id.state);
         await axios
             .get("/post", {
                 headers: {
@@ -110,10 +103,6 @@ function Read(props) {
             .catch((error) => {
                 console.error(error);
             });
-    };
-
-    const listbutton = () => {
-        props.propFunction(false);
     };
 
     const writeComment = (e) => {
@@ -242,11 +231,11 @@ function Read(props) {
 
     useEffect(() => {
         isValidToken();
-    }, [login_user, username]);
+    });
 
     useEffect(() => {
         findWriter();
-    }, [username, login_user]);
+    });
 
     return (
         <div className={style.readWrapper}>
