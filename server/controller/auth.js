@@ -112,8 +112,7 @@ export async function checkMarking(req, res, next) {
     const username = req.headers.username;
     let result = false;
 
-    if (username === undefined)
-        return res.status(200).json(result);
+    if (username === undefined) return res.status(200).json(result);
 
     console.log("mUser: " + mUser);
     console.log("username: " + username);
