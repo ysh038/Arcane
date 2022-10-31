@@ -1,6 +1,6 @@
 [[redirects]]
-  from = "/auth"
-  to = "http://3.215.131.222:5000/auth"
+  from = "/auth/*"
+  to = "http://3.215.131.222:5000/auth:splat"
   status = 200
   force = true
   
