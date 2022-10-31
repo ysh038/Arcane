@@ -235,7 +235,7 @@ function Read(props) {
 
     useEffect(() => {
         findWriter();
-    }, []);
+    }, [title]);
 
     return (
         <div className={style.readWrapper}>
