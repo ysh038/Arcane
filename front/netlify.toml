@@ -1,7 +1,7 @@
 [[redirects]]
-  from = "https://golden-chimera-76d804.netlify.app/auth"
-  to = "/auth"
-  status = 301
+  from = "/auth"
+  to = "http://3.215.131.222:5000/auth"
+  status = 200
   force = true
   
 [[redirects]]
