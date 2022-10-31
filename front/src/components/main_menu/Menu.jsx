@@ -69,7 +69,7 @@ function Menu() {
                 className={style.menuMainButton}
                 onClick={onClick}
             >
-                <p>{isLogin ? userName : "Login"}</p>
+                <p>{isLogin ? "??" : "Login"}</p>
             </Link>
             <div
                 className={`${style.menuSubButtonItem} ${style.menuSubChampionBtn}`}
