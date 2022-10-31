@@ -231,11 +231,11 @@ function Read(props) {
 
     useEffect(() => {
         isValidToken();
-    });
+    }, []);
 
     useEffect(() => {
         findWriter();
-    });
+    }, []);
 
     return (
         <div className={style.readWrapper}>
