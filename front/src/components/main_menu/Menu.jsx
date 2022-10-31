@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TokenStorage from "../../db/token";
 import style from "./menu.module.css";
-// import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 
 function Menu() {
     const [isLogin, setLogin] = useState(false);
