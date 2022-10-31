@@ -2,3 +2,9 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+  [[redirects]]
+  from = "https://golden-chimera-76d804.netlify.app/*"
+  to = "hhttps://golden-chimera-76d804.netlify.app/:splat"
+  status = 301
+  force = true
