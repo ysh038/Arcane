@@ -40,13 +40,12 @@ function Menu() {
                 withCredentials: true,
             })
             .then((res) => {
+                console.log("token:", token);
+                console.log("res data:", res.data);
                 setuserName(res.data.username);
                 setLogin(true);
             })
             .catch((err) => console.log(err));
-
-        console.log(isLogin);
-        console.log(token);
     };
 
     useEffect(() => {
