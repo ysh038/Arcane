@@ -128,6 +128,7 @@ function Read(props) {
                 .catch((error) => {
                     console.error(error);
                 });
+            window.location.reload();
         }
     };
 
@@ -235,7 +236,7 @@ function Read(props) {
 
     useEffect(() => {
         findWriter();
-    }, [comments]);
+    }, [title]);
 
     return (
         <div className={style.readWrapper}>
