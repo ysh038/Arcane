@@ -1,4 +1,16 @@
 [[redirects]]
+  from = "/auth"
+  to = "http://https://golden-chimera-76d804.netlify.app/auth"
+  status = 200
+  force = true
+
+  [[redirects]]
+  from = "/proxy/*"
+  to = "https://url주소/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
