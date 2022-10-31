@@ -1,6 +1,6 @@
 [[redirects]]
-  from = "https://golden-chimera-76d804.netlify.app/*"
-  to = "hhttps://golden-chimera-76d804.netlify.app/:splat"
+  from = "https://golden-chimera-76d804.netlify.app/auth"
+  to = "https://golden-chimera-76d804.netlify.app/auth/:splat"
   status = 301
   force = true
   
