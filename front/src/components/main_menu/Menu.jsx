@@ -51,7 +51,7 @@ function Menu() {
 
     useEffect(() => {
         isValidToken();
-    }, []);
+    }, [isLogin]);
 
     // useEffect(() => {
     //     socket.emit("welcome", userName);
@@ -69,7 +69,7 @@ function Menu() {
                 className={style.menuMainButton}
                 onClick={onClick}
             >
-                <p>{isLogin ? "??" : "Login"}</p>
+                <p>{isLogin ? userName : "Login"}</p>
             </Link>
             <div
                 className={`${style.menuSubButtonItem} ${style.menuSubChampionBtn}`}
