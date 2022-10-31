@@ -1,4 +1,4 @@
-import { ErrorOutline, Loop } from "@mui/icons-material"
+import { ErrorOutline, Loop } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import style from "./history.module.css";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,9 @@ function History(props) {
     let newMatchList = props.isRefresh;
 
     const getMatchHistory = async () => {
-        const matchHistoryUl = document.querySelector("." + style["matchHistory"]); // 매치 전적 ul
+        const matchHistoryUl = document.querySelector(
+            "." + style["matchHistory"]
+        ); // 매치 전적 ul
         if (matchHistoryUl) {
             removeAllchild(matchHistoryUl);
         }
@@ -20,24 +22,25 @@ function History(props) {
             const sliceMatchList = summData.matchList.slice(0, count);
             sliceMatchList.forEach((m) => {
                 createMatchBox(m, false);
-            })
+            });
         }
-            
+
         if (newMatchList.length !== 0) {
-            newMatchList.forEach(m => {
+            newMatchList.forEach((m) => {
                 createMatchBox(m, true);
-            })
+            });
             props.isinitial();
         }
-    }
-    
+    };
+
     const createMatchBox = (data, isNew) => {
-        const matchHistory = document.querySelector("." + style["matchHistory"]); // 매치 전적 ul
+        const matchHistory = document.querySelector(
+            "." + style["matchHistory"]
+        ); // 매치 전적 ul
         const li = document.createElement("li");
 
         li.setAttribute("class", style.matchInfoBox);
-        if (data.result === "승리")
-            li.style.backgroundColor = "#28344E";
+        if (data.result === "승리") li.style.backgroundColor = "#28344E";
         li.dataset.queue = data.queueType;
 
         const boxLeft = createBoxLeft(data);
@@ -47,9 +50,16 @@ function History(props) {
         const boxMiddleToRight = createBoxMiddleToRight(data);
         const boxRight = createBoxRight(data);
 
-        const boxs = [boxLeft, boxLeftToMiddle, boxMiddle1, boxMiddle2, boxMiddleToRight, boxRight];
+        const boxs = [
+            boxLeft,
+            boxLeftToMiddle,
+            boxMiddle1,
+            boxMiddle2,
+            boxMiddleToRight,
+            boxRight,
+        ];
 
-        boxs.forEach(b => {
+        boxs.forEach((b) => {
             li.appendChild(b);
         });
 
@@ -59,7 +69,7 @@ function History(props) {
         }
 
         matchHistory.appendChild(li);
-    }
+    };
 
     const createBoxLeft = (data) => {
         // 요소 생성
@@ -70,11 +80,9 @@ function History(props) {
 
         // 속성 부여
         div.setAttribute("class", style.infoLeft);
-        spanQueue.setAttribute("class", style.spanQueue)
-        if (data.result === "승리")
-            spanWin.style.color = "#4444CC";
-        else
-            spanWin.style.color = "#CC5867";
+        spanQueue.setAttribute("class", style.spanQueue);
+        if (data.result === "승리") spanWin.style.color = "#4444CC";
+        else spanWin.style.color = "#CC5867";
 
         // 값 설정
         spanQueue.innerText = data.queueType;
@@ -87,7 +95,7 @@ function History(props) {
         div.appendChild(spanDate);
 
         return div;
-    }
+    };
 
     const createBoxLeftToMiddle = (data) => {
         // 요소 생성
@@ -98,7 +106,7 @@ function History(props) {
         const championImg = document.createElement("img");
         const levelWrapper = document.createElement("div");
         const championLevel = document.createElement("span");
-        
+
         const spellDWrapper = document.createElement("div");
         const spellFWrapper = document.createElement("div");
         const spellD = document.createElement("img");
@@ -165,13 +173,13 @@ function History(props) {
         infoLeftToMiddle.appendChild(runeBox);
 
         return infoLeftToMiddle;
-    }
+    };
 
     const createBoxMiddle1 = (data) => {
         // 요소 생성
         const infoMiddle1 = document.createElement("div");
         const itemBuild = document.createElement("ul");
-        const wardItem = document.createElement("img");
+        let wardItem = document.createElement("img");
         const itemIds = [
             data.item0,
             data.item1,
@@ -187,16 +195,23 @@ function History(props) {
         itemBuild.setAttribute("class", style.itemBuild);
         wardItem.setAttribute("class", `${style.item} ${style.wardItem}`);
 
-        for (let i = 0; i < itemIds.length; i++){
+        for (let i = 0; i < itemIds.length; i++) {
             const item = document.createElement("li");
             const itemImg = document.createElement("img");
             const link = itemIds[i];
-            
+
             if (i === itemIds.length - 1) {
-                wardItem.setAttribute("src", link);
+                if (itemIds[i] === "") {
+                    wardItem = document.createElement("div");
+                    wardItem.setAttribute(
+                        "class",
+                        `${style.item} ${style.wardItem}`
+                    );
+                } else wardItem.setAttribute("src", link);
+
                 break;
             }
-            
+
             item.setAttribute("class", style.item);
             itemImg.setAttribute("class", style.itemImg);
             itemImg.setAttribute("alt", "item Img");
@@ -205,9 +220,8 @@ function History(props) {
             if (itemIds[i] === "") {
                 const emptyItemImg = document.createElement("img");
                 item.appendChild(emptyItemImg);
-            } else
-                item.appendChild(itemImg);
-            
+            } else item.appendChild(itemImg);
+
             itemBuild.appendChild(item);
         }
 
@@ -215,7 +229,7 @@ function History(props) {
         infoMiddle1.appendChild(wardItem);
 
         return infoMiddle1;
-    }
+    };
 
     const createBoxMiddle2 = (data) => {
         // 요소 생성
@@ -225,7 +239,7 @@ function History(props) {
         const csLabel = document.createElement("span");
 
         const kda = parseFloat(data.kda);
-        
+
         // 값 조정
         const calcKDA = Math.round((kda + Number.EPSILON) * 100) / 100;
 
@@ -237,8 +251,7 @@ function History(props) {
             kdaScoreLabel.innerHTML = `평점: <span style="color: #4444CC; font-weight: bold">${calcKDA}</span>`;
         else if (calcKDA >= 4)
             kdaScoreLabel.innerHTML = `평점: <span style="color: #CC5867; font-weight: bold">${calcKDA}</span>`;
-        else
-            kdaScoreLabel.innerText = `평점: ${calcKDA}`;
+        else kdaScoreLabel.innerText = `평점: ${calcKDA}`;
 
         csLabel.innerText = `CS: ${data.cs}`;
 
@@ -247,7 +260,7 @@ function History(props) {
         infoMiddle2.appendChild(csLabel);
 
         return infoMiddle2;
-    }
+    };
 
     const createBoxMiddleToRight = (data) => {
         // 요소 생성
@@ -262,7 +275,7 @@ function History(props) {
         infoMiddleToRight.appendChild(span);
 
         return infoMiddleToRight;
-    }
+    };
 
     const createBoxRight = (data) => {
         // 요소 생성
@@ -278,7 +291,7 @@ function History(props) {
             const summoner = document.createElement("li");
             const playedChampionImg = document.createElement("img");
             const summonerName = document.createElement("span");
-            
+
             summoner.setAttribute("class", style.summoner);
             playedChampionImg.setAttribute("class", style.playedChampionImg);
             playedChampionImg.setAttribute("src", p.champion);
@@ -286,28 +299,28 @@ function History(props) {
             summonerName.setAttribute("class", style.summonerName);
 
             summonerName.innerText = p.summonerName;
-            summonerName.onclick = function () { summonerNavigate(p.summonerName); };
+            summonerName.onclick = function () {
+                summonerNavigate(p.summonerName);
+            };
 
             summoner.appendChild(playedChampionImg);
             summoner.appendChild(summonerName);
-            
 
-            if (i < 5)
-                blueTeams.appendChild(summoner);
-            else
-                redTeams.appendChild(summoner);
-
+            if (i < 5) blueTeams.appendChild(summoner);
+            else redTeams.appendChild(summoner);
         });
 
         infoRight.appendChild(blueTeams);
         infoRight.appendChild(redTeams);
 
         return infoRight;
-    }
+    };
 
     // 정렬 아이템 클릭시 실행 함수
     const sortClick = (e) => {
-        const matchHistory = document.querySelector("." + style["matchHistory"]); // 매치 전적 ul
+        const matchHistory = document.querySelector(
+            "." + style["matchHistory"]
+        ); // 매치 전적 ul
         let clickedSortItem = e.target;
         if (e.target.parentNode.classList[0] === style.sortBtn)
             clickedSortItem = e.target.parentNode;
@@ -327,33 +340,35 @@ function History(props) {
             for (let i = 0; i < matchList.length; i++) {
                 if (matchList[i].dataset.queue === clickedSortItem.innerText)
                     matchList[i].style.display = "flex";
-                else
-                    matchList[i].style.display = "none";
+                else matchList[i].style.display = "none";
             }
         }
-
-    }
+    };
 
     const removeAllchild = (div) => {
-        while(div.hasChildNodes()){
+        while (div.hasChildNodes()) {
             div.removeChild(div.firstChild);
         }
-    }
+    };
 
     const summonerNavigate = (summonerName) => {
         navigate(`/summoners/${summonerName}`, {
             state: {
                 summoner: summonerName,
-            }
-        })
+            },
+        });
         window.location.reload();
-    }
+    };
 
     const moreMatch = async () => {
         const moreBtn = document.querySelector("." + style["matchMoreBtn"]);
-        const loadingCircle = document.querySelector("." + style["loadingCircle"]);
-        const matchMoreLabel = document.querySelector("." + style["matchMoreLabel"]);
-        
+        const loadingCircle = document.querySelector(
+            "." + style["loadingCircle"]
+        );
+        const matchMoreLabel = document.querySelector(
+            "." + style["matchMoreLabel"]
+        );
+
         loadingCircle.style.display = "flex";
         matchMoreLabel.style.display = "none";
 
@@ -362,42 +377,64 @@ function History(props) {
 
         if (!moreMatchList) {
             console.log("더이상 불러올 전적이 없습니다.");
-            const notMatchDiv = document.querySelector("." + style["notMatchList"]);
+            const notMatchDiv = document.querySelector(
+                "." + style["notMatchList"]
+            );
 
             moreBtn.style.display = "none";
             notMatchDiv.style.display = "flex";
 
             return;
         } else {
-            moreMatchList.forEach(m => {
+            moreMatchList.forEach((m) => {
                 createMatchBox(m, false);
-            })
+            });
 
             loadingCircle.style.display = "none";
             matchMoreLabel.style.display = "block";
         }
-    }
+    };
 
     useEffect(() => {
         getMatchHistory();
     }, [summData, newMatchList]);
-    
+
     return (
         <div className={style.historyContainer}>
             <div className={style.historyTopbar}>
-                <div id="allHistory" className={`${style.sortBtn} ${style.active}`} onClick={sortClick}><span>전체</span></div>
-                <div id="soloHistory" className={`${style.sortBtn}`} onClick={sortClick}><span>솔로랭크</span></div>
-                <div id="flexHistory" className={`${style.sortBtn}`} onClick={sortClick}><span>자유랭크</span></div>
+                <div
+                    id="allHistory"
+                    className={`${style.sortBtn} ${style.active}`}
+                    onClick={sortClick}
+                >
+                    <span>전체</span>
+                </div>
+                <div
+                    id="soloHistory"
+                    className={`${style.sortBtn}`}
+                    onClick={sortClick}
+                >
+                    <span>솔로랭크</span>
+                </div>
+                <div
+                    id="flexHistory"
+                    className={`${style.sortBtn}`}
+                    onClick={sortClick}
+                >
+                    <span>자유랭크</span>
+                </div>
             </div>
-            
-            <ul className={style.matchHistory}>
-            </ul>
+
+            <ul className={style.matchHistory}></ul>
             <button className={style.matchMoreBtn} onClick={moreMatch}>
-                <div className={style.loadingCircle} style={{ display: "none" }}>
+                <div
+                    className={style.loadingCircle}
+                    style={{ display: "none" }}
+                >
                     <div className={style.innerLoadingCircle}></div>
                 </div>
                 <span className={style.matchMoreLabel}>+ 더 불러오기</span>
-            </button>           
+            </button>
             <div className={style.notMatchList} style={{ display: "none" }}>
                 <div className={style.notMatchError}>
                     <ErrorOutline className={style.errorIcon} />

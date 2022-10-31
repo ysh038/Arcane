@@ -5,7 +5,7 @@
 
 /* Topbar */
 .historyTopbar {
-    background-color: #302E2E;
+    background-color: #302e2e;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -73,7 +73,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
     width: 142px;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .runeBox:first-child {
-    background-color: #34373C;
+    background-color: #34373c;
 }
 
 .runeWrapper {
@@ -180,7 +180,7 @@
 .item {
     width: 34px;
     height: 34px;
-    background-color: #34373C;
+    background-color: #34373c;
     border-radius: 4px;
 }
 
@@ -191,7 +191,7 @@
 }
 
 .wardItem {
-    background-color: cornflowerblue;
+    background-color: gray;
 }
 
 /* matchBox Middle2 */
@@ -225,7 +225,7 @@
     justify-content: center;
     align-items: center;
     padding-left: 0;
-    
+
     width: 258px;
 }
 
@@ -238,7 +238,6 @@
     padding: 0;
 }
 
-
 .summoner {
     display: flex;
     justify-content: center;
@@ -250,7 +249,7 @@
     height: 16px;
     border-radius: 50%;
     background-color: blue;
-}   
+}
 
 .summonerName {
     width: 98px;
@@ -315,7 +314,7 @@
     height: 150px;
     border: none;
     border-radius: 5px;
-    background-color: #302E2E;
+    background-color: #302e2e;
     opacity: 1;
     margin: 8px 6px;
 }
