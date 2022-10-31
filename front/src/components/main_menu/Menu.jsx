@@ -44,6 +44,9 @@ function Menu() {
                 setLogin(true);
             })
             .catch((err) => console.log(err));
+
+        console.log(isLogin);
+        console.log(token);
     };
 
     useEffect(() => {
