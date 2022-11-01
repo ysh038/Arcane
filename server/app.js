@@ -3,6 +3,9 @@ import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
 import path from "path";
+import http from "http";
+import https from "https";
+import fs from "fs";
 import history from "connect-history-api-fallback";
 import "express-async-errors";
 import summonersRouter from "./router/summoners.js";
@@ -49,8 +52,19 @@ app.use((error, req, res, next) => {
 connectDB() //
     .then(() => {
         console.log("db 연결 완료");
-        const server = app.listen(config.host.port);
-        initSocket(server);
+        // const server = app.listen(config.host.port);
+        // initSocket(server);
+
+        var options = {
+            key: fs.readFileSync("./privkey.pem"),
+            cert: fs.readFileSync("./public.pem"),
+        };
+        const httpsServer = https
+            .createServer(options, app)
+            .listen(config.host.port, () => {
+                console.log("listening on *: " + config.host.port);
+            });
+        initSocket(httpsServer);
     })
     .catch((err) => {
         console.log(err);

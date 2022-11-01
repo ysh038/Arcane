@@ -21,12 +21,6 @@
   to = "http://3.215.131.222:5000/api/:splat"
   status = 200
   force = true
-
- [[redirects]]
-  from = "/socket.io/*"
-  to = "http://3.215.131.222:5000/socket.io/:splat"
-  status = 200
-  force = true
   
 [[redirects]]
   from = "/*"
