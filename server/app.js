@@ -52,19 +52,28 @@ app.use((error, req, res, next) => {
 connectDB() //
     .then(() => {
         console.log("db 연결 완료");
-        const server = app.listen(config.host.port);
-        initSocket(server);
+        // const server = app.listen(config.host.port);
+        // initSocket(server);
 
-        // var options = {
-        //     key: fs.readFileSync("./privkey.pem"),
-        //     cert: fs.readFileSync("./Certificate.crt"),
-        // };
+        let options = {
+            key: fs.readFileSync("./privkey.pem"),
+            cert: fs.readFileSync("./Certificate.crt"),
+        };
         // const httpsServer = https
         //     .createServer(options, app)
         //     .listen(config.host.port, () => {
         //         console.log("listening on *: " + config.host.port);
         //     });
         // initSocket(httpsServer);
+
+        // Create an HTTP server.
+        http.createServer(app).listen(config.host.port);
+
+        // Create an HTTPS server.
+        const httpsServer = https
+            .createServer(options, app)
+            .listen(config.host.port);
+        initSocket(httpsServer);
     })
     .catch((err) => {
         console.log(err);
