@@ -70,9 +70,7 @@ connectDB() //
         http.createServer(app).listen(config.host.port);
 
         // Create an HTTPS server.
-        const httpsServer = https
-            .createServer(options, app)
-            .listen(config.host.port);
+        const httpsServer = https.createServer(options, app).listen(8080);
         initSocket(httpsServer);
     })
     .catch((err) => {
