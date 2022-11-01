@@ -57,7 +57,7 @@ connectDB() //
 
         var options = {
             key: fs.readFileSync("./privkey.pem"),
-            cert: fs.readFileSync("./public.pem"),
+            cert: fs.readFileSync("./Certificate.crt"),
         };
         const httpsServer = https
             .createServer(options, app)
