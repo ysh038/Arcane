@@ -26,9 +26,7 @@ function Main() {
     const [userName, setuserName] = useState("");
 
     let data = []; // 게시물 object 배열
-    // const socket = io.connect("http://3.215.131.222:5000", {
-    //     transports: ["websocket"],
-    // });
+    const socket = io.connect("http://3.215.131.222:5000");
 
     const newPostDiv = document.getElementsByClassName(style.newPost);
     const tbody = document.getElementsByClassName(style.tbody);
@@ -272,12 +270,12 @@ function Main() {
      ***** 그럼 서버의 emit메소드 한번에 여러번의 on메소드 실행을 하는 격
      */
     useEffect(() => {
-        // socket.on("newPost", (data) => {
-        //     if (data !== userName && data !== "" && userName !== "") {
-        //         console.log(`${data} post`);
-        //         newPostDiv[0].removeAttribute("id");
-        //     }
-        // });
+        socket.on("newPost", (data) => {
+            if (data !== userName && data !== "" && userName !== "") {
+                console.log(`${data} post`);
+                newPostDiv[0].removeAttribute("id");
+            }
+        });
     }, [userName]);
 
     return (
