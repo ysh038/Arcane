@@ -38,7 +38,7 @@ function MyPageLikePost(props) {
         setTimeout(() => {
             like_list_div.current.classList.add(style.show);
         }, 100);
-    });
+    }, []);
 
     return (
         <>
