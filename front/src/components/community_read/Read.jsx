@@ -232,11 +232,11 @@ function Read(props) {
 
     useEffect(() => {
         isValidToken();
-    }, []);
+    }, [username, login_user]);
 
     useEffect(() => {
         findWriter();
-    }, [title]);
+    }, [username, login_user]);
 
     return (
         <div className={style.readWrapper}>
