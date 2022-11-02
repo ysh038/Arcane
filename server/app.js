@@ -52,13 +52,13 @@ app.use((error, req, res, next) => {
 connectDB() //
     .then(() => {
         console.log("db 연결 완료");
-        // const server = app.listen(config.host.port);
+        const server = app.listen(config.host.port);
         // initSocket(server);
 
-        let options = {
-            key: fs.readFileSync("./privkey.pem"),
-            cert: fs.readFileSync("./Certificate.crt"),
-        };
+        // let options = {
+        //     key: fs.readFileSync("./privkey.pem"),
+        //     cert: fs.readFileSync("./Certificate.crt"),
+        // };
         // const httpsServer = https
         //     .createServer(options, app)
         //     .listen(config.host.port, () => {
@@ -67,11 +67,11 @@ connectDB() //
         // initSocket(httpsServer);
 
         // Create an HTTP server.
-        http.createServer(app).listen(config.host.port);
+        // http.createServer(app).listen(config.host.port);
 
         // Create an HTTPS server.
-        const httpsServer = https.createServer(options, app).listen(8080);
-        initSocket(httpsServer);
+        // const httpsServer = https.createServer(options, app).listen(8080);
+        // initSocket(httpsServer);
     })
     .catch((err) => {
         console.log(err);

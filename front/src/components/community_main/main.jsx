@@ -4,7 +4,6 @@ import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
-import { io } from "socket.io-client";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TokenStorage from "../../db/token";
@@ -26,7 +25,6 @@ function Main() {
     const [userName, setuserName] = useState("");
 
     let data = []; // 게시물 object 배열
-    const socket = io.connect("http://3.215.131.222:5000");
 
     const newPostDiv = document.getElementsByClassName(style.newPost);
     const tbody = document.getElementsByClassName(style.tbody);
@@ -269,14 +267,6 @@ function Main() {
      ***** 다른 함수에 넣게 되면 그 함수가 실행될 때마다 on메소드가 늘어나서 결국엔 on메소드가 여러개인것처럼 된다
      ***** 그럼 서버의 emit메소드 한번에 여러번의 on메소드 실행을 하는 격
      */
-    useEffect(() => {
-        socket.on("newPost", (data) => {
-            if (data !== userName && data !== "" && userName !== "") {
-                console.log(`${data} post`);
-                newPostDiv[0].removeAttribute("id");
-            }
-        });
-    }, [userName]);
 
     return (
         <div className={style.mainContainer}>
