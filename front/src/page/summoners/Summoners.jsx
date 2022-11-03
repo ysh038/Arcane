@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
-import { Loop, WarningAmber } from "@mui/icons-material";
+import { Loop, WarningAmber, ErrorOutline } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import style from "./summoners.module.css";
 import Topbar from "./../../components/summoners_topbar/Topbar.jsx";
@@ -24,6 +24,7 @@ function Summoners() {
     const [isLoading, setIsLoading] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
     const [isRe, setIsRe] = useState(false);
+    const [notFound, setNotFound] = useState(false);
     const [userName, setUserName] = useState("");
     const [summonerJsonData, setSummonerJsonData] = useState({}); // riot에서 가져온 소환사 기본 정보
     const [summonerData, setSummonerData] = useState({}); // summonerJson에서 필요한 정보만 뽑아서 모은 정보
@@ -111,6 +112,7 @@ function Summoners() {
         } catch (e) {
             console.log("존재하지 않는 유저 입니다.");
             console.log("not found error: " + e);
+            setNotFound(true);
         }
     };
 
@@ -440,7 +442,16 @@ function Summoners() {
 
     return (
         <div className={style.summonersContainer}>
-            {isLoading ? (
+            {notFound ? (
+                <div className={style.notFoundBox}>
+                    <Topbar isLogin={isLogin} userName={userName} />
+                    <ErrorOutline className={style.errorIcon} />
+                    <span className={style.errorMsg}>
+                        검색하신 유저를 찾을 수 없습니다. 소환사명을 다시 확인해
+                        주세요. :({" "}
+                    </span>
+                </div>
+            ) : isLoading ? (
                 <div className={style.summonersWrapper}>
                     <Topbar isLogin={isLogin} userName={userName} />
                     <User
@@ -475,6 +486,7 @@ function Summoners() {
                     </div>
                 </div>
             )}
+
             <Footer />
         </div>
     );
@@ -559,7 +571,7 @@ function queueTypeConverter(queue) {
             convertedQueue = "무작위 총력전";
             break;
         case "Ultimate Spellbook games":
-            convertedQueue = "궁국기 주문서";
+            convertedQueue = "궁극기 주문서";
             break;
 
         case "Pick URF games":
