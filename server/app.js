@@ -15,7 +15,7 @@ import authRouter from "./router/auth.js";
 import { config } from "./config.js";
 import { connectDB } from "./db/db.js";
 import { User } from "./model/schema.js";
-import { initSocket } from "./connection/socket.js";
+// import { initSocket } from "./connection/socket.js";
 import postRouter from "./router/post.js";
 
 const app = express();
