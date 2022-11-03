@@ -20,7 +20,7 @@ import postRouter from "./router/post.js";
 
 const app = express();
 const __dirname = path.resolve();
-
+/**dd */
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
