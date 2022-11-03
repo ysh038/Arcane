@@ -12,6 +12,8 @@ router.get("/getinfo", summonersController.getSummonerInfo);
 
 router.get("/checkhistory", summonersController.checkMatchHistory);
 
+router.get("/lastmatch", summonersController.getLastMatch);
+
 router.post("/saveinfo", summonersController.saveSummonerInfo);
 
 router.post("/addhistory", summonersController.addMatchHistory);
@@ -19,6 +21,5 @@ router.post("/addhistory", summonersController.addMatchHistory);
 router.post("/addnewhistory", summonersController.addNewMatchHistory);
 
 router.patch("/updaterank", summonersController.updateRankData);
-
 
 export default router;

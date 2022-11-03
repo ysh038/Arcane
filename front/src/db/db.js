@@ -13,13 +13,13 @@ export default class DB {
                 return res.data.username;
             })
             .catch((err) => console.log(err));
-        
+
         return await username;
     }
 
     /**서버를 통해 북마크를 on/off 해줌 (return boolean)*/
     async bookMarkingDB(markingUser, userName) {
-        let result = await axios//
+        let result = await axios //
             .post("/auth/marking", {
                 markingUser: markingUser,
                 userName: userName,
@@ -28,29 +28,29 @@ export default class DB {
                 return res.data;
             })
             .catch((err) => console.log("db bookMark error: " + err));
-        
+
         return await result;
     }
 
     /**서버를 통해 해당 유저가 검색한 소환사를 북마크 했는지 여부를 반환 (return boolean) */
     async checkMarking(markingUser, userName) {
         const mUser = encodeURIComponent(markingUser);
-        let result = await axios//
+        let result = await axios //
             .get("/auth/check", {
                 headers: {
                     muser: mUser,
                     username: userName,
-                }
+                },
             })
             .then((res) => {
-                console.log("bookMarking되어있음: " + res.data);
+                // console.log("bookMarking되어있음: " + res.data);
                 return res.data;
             })
             .catch((err) => {
                 console.log("db checkMark error: " + err);
                 return false;
             });
-        
+
         return await result;
     }
 
@@ -59,17 +59,17 @@ export default class DB {
         // 이름이 한글일 경우 type error가 발생해 이름을 인코딩 후 전달
         // 이후 서버에서 디코딩 해서 사용
         const summonerName = encodeURIComponent(name);
-        let result = await axios//
+        let result = await axios //
             .get("/api/summoners/isin", {
                 headers: {
                     summonername: summonerName,
-                }
+                },
             })
             .then((res) => {
                 console.log("이미 디비에 있는 소환사임: " + res.data);
                 return res.data;
             })
-            .catch(err => console.log("isSummoner error: " + err));
+            .catch((err) => console.log("isSummoner error: " + err));
 
         return await result;
     }
@@ -79,7 +79,7 @@ export default class DB {
      * (return void)
      */
     async saveSummonerInfo(summoner, rankData, matchHistoryList) {
-        let data = await axios//
+        let data = await axios //
             .post("/api/summoners/saveinfo", {
                 summoner: summoner,
                 rankData: rankData,
@@ -89,8 +89,8 @@ export default class DB {
                 console.log("검색한 소환사의 정보를 저장함: " + res.data);
                 return res.data;
             })
-            .catch(err => console.log("saveSummonerInfo error: " + err));
-        
+            .catch((err) => console.log("saveSummonerInfo error: " + err));
+
         return await data;
     }
 
@@ -98,18 +98,18 @@ export default class DB {
     async getSummonerInfo(name) {
         const summonerName = encodeURIComponent(name);
 
-        let result = await axios//
+        let result = await axios //
             .get("/api/summoners/getinfo", {
                 headers: {
                     summonername: summonerName,
-                }
+                },
             })
             .then((res) => {
                 console.log("소환사 정보 가져옴: " + res.data);
-                return res.data
+                return res.data;
             })
-            .catch(err => console.log("getSummonerInfo func error"));
-        
+            .catch((err) => console.log("getSummonerInfo func error"));
+
         return await result;
     }
 
@@ -117,26 +117,26 @@ export default class DB {
     async checkDBHistory(name, startIndex, count) {
         const summonerName = encodeURIComponent(name);
 
-        let data = await axios//
+        let data = await axios //
             .get("/api/summoners/checkhistory", {
                 headers: {
                     name: summonerName,
                     start: startIndex,
-                    count: count,   
-                }
+                    count: count,
+                },
             })
             .then((res) => {
                 console.log("받아온 전적 데이터: " + res.data);
                 return res.data;
             })
-            .catch(err => console.log("checkDBHistory error: " + err));
-        
+            .catch((err) => console.log("checkDBHistory error: " + err));
+
         return await data;
     }
 
     /**새롭게 불러온 전적 리스트 (최근 전적이 아닌 옛날 전적들)를 디비에 추가 */
     async addMatchHistory(name, matchHistoryList) {
-        let data = await axios//
+        let data = await axios //
             .post("/api/summoners/addhistory", {
                 summonerName: name,
                 matchHistoryList: matchHistoryList,
@@ -145,14 +145,14 @@ export default class DB {
                 console.log("새롭게 불러온 기존 전적들을 추가함: " + res.data);
                 return res.data;
             })
-            .catch(err => console.log("addMatchHistory error: " + err));
-        
+            .catch((err) => console.log("addMatchHistory error: " + err));
+
         return await data;
     }
 
     /**새롭게 불러온 전적 리스트 (가장 최근 전적들)를 디비에 추가 */
     async addNewMatchHistory(name, matchHistoryList) {
-        let data = await axios//
+        let data = await axios //
             .post("/api/summoners/addnewhistory", {
                 summonerName: name,
                 matchHistoryList: matchHistoryList,
@@ -161,8 +161,8 @@ export default class DB {
                 console.log("새롭게 불러온 뉴 전적들을 추가함: " + res.data);
                 return res.data;
             })
-            .catch(err => console.log("addMatchHistory error: " + err));
-        
+            .catch((err) => console.log("addMatchHistory error: " + err));
+
         return await data;
     }
 
@@ -182,4 +182,21 @@ export default class DB {
         return await result;
     }
 
+    async getLastMatch(summonerName) {
+        const name = encodeURIComponent(summonerName);
+
+        let data = await axios //
+            .get("/api/summoners/lastmatch", {
+                headers: {
+                    name: name,
+                },
+            })
+            .then((res) => {
+                console.log("가장 최근 전적 id: " + res.data);
+                return res.data;
+            })
+            .catch((err) => console.log("getLastMatch error: " + err));
+
+        return await data;
+    }
 }

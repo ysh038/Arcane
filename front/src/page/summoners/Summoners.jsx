@@ -5,7 +5,7 @@ import style from "./summoners.module.css";
 import Topbar from "./../../components/summoners_topbar/Topbar.jsx";
 import User from "../../components/summoners_main_user/User.jsx";
 import Rank from "../../components/summoners_main_rank/Rank.jsx";
-import Most from "../../components/summoners_main_most/Most";
+// import Most from "../../components/summoners_main_most/Most";
 import History from "../../components/summoners_main_history/History.jsx";
 import Footer from "../../components/summoners_footer/Footer.jsx";
 import Riot_API from "../../network/riotAPI";
@@ -30,8 +30,8 @@ function Summoners() {
     const [newMatchData, setNewMatchData] = useState([]);
     const [isDB, setIsDB] = useState(false);
     const [lastestMatch, setLastestMatch] = useState("");
-    const [matchStart, setMatchStart] = useState(0); // 불러올 전적의 시작 index (default: 0)
-    const [matchCount, setMatchCount] = useState(20); // 불러올 전적의 개수
+    const matchStart = 0; // 불러올 전적의 시작 index (default: 0)
+    const matchCount = 20; // 불러올 전적의 개수
     const [currentMatchNum, setCurrentMatchNum] = useState(0); // 현재까지 불러온 전적리스트 개수
     const [queueTypeJsonData, setQueueTypeJsontData] = useState({});
     const [spellJsonData, setSpellJsonData] = useState({});
@@ -64,7 +64,7 @@ function Summoners() {
             ) {
                 // 데베에 검색한 유저가 있다면 -> 해당 유저의 데이터를 가져옴
                 const DB_summoner = await db.getSummonerInfo(summonerJson.name);
-                console.log("유저가 있군요!: ", DB_summoner);
+                // console.log("유저가 있군요!: ", DB_summoner);
                 if (DB_summoner.matchList.length <= matchCount) {
                     setCurrentMatchNum(
                         currentMatchNum + DB_summoner.matchList.length
@@ -83,8 +83,9 @@ function Summoners() {
                     matchStart,
                     matchCount
                 );
+                console.log("matchIdListData: ", matchIdListData);
 
-                if (matchIdListData.length != 0)
+                if (matchIdListData.length !== 0)
                     setLastestMatch(matchIdListData[0]);
 
                 const matchHistoryList = await Promise.all(
@@ -92,13 +93,14 @@ function Summoners() {
                         return getMatchInfo(m, summonerJson);
                     })
                 );
+                console.log("matchHistoryList: ", matchHistoryList);
 
                 const DB_summoner = await db.saveSummonerInfo(
                     summonerJson,
                     await rankData,
                     matchHistoryList
                 );
-                console.log("첨 검색했군요!: ", DB_summoner);
+                // console.log("첨 검색했군요!: ", DB_summoner);
                 setSummonerData(DB_summoner);
                 setCurrentMatchNum(currentMatchNum + matchIdListData.length);
                 setIsDB(false);
@@ -232,6 +234,9 @@ function Summoners() {
                 case spell2:
                     spells[1] = spellTypeData.data[s].image.full;
                     break;
+
+                default:
+                    break;
             }
         }
 
@@ -261,6 +266,9 @@ function Summoners() {
                 case subRuneId:
                     runes[2] = runesTypeData[r].key;
                     break;
+
+                default:
+                    break;
             }
         }
 
@@ -279,8 +287,10 @@ function Summoners() {
             matchCount
         );
 
-        let pos = matchIdListData.indexOf(lastestMatch);
-        if (pos != -1) {
+        const lastMatch = await db.getLastMatch(summonerJsonData.name);
+        console.log("lastMatch: " + lastMatch);
+        let pos = matchIdListData.indexOf(lastMatch);
+        if (pos !== -1) {
             // 불러온 전적중에 디비에 있는 가장 최근 전적이 있을경우
             const newMatchIdList = matchIdListData.slice(0, pos);
             if (newMatchIdList.length === 1) {
@@ -312,9 +322,11 @@ function Summoners() {
                 summonerJsonData.name,
                 matchHistoryList
             );
+            console.log("newMatchList: ", newMatchList);
 
             setCurrentMatchNum(currentMatchNum + newMatchIdList.length);
             setNewMatchData(newMatchList);
+            setLastestMatch(matchIdListData[0]);
         } else {
             // 불러온 전적중에 디비에 있는 가장 최근 전적이 없을경우
             let checkNum = 1;
@@ -325,33 +337,36 @@ function Summoners() {
                     matchCount
                 );
                 pos = matchIdListData.indexOf(lastestMatch);
-                if (pos != -1) {
-                    checkNum += matchCount * i + pos;
+                if (pos !== -1) {
+                    checkNum = matchCount * i + pos;
+                    matchIdListData = await riot.getMatchIdList(
+                        summonerJsonData.puuid,
+                        matchStart,
+                        checkNum
+                    );
+                    console.log("matchIdListData over 20: ", matchIdListData);
+
+                    matchIdListData.reverse();
+
+                    console.log("reverseList: ", matchIdListData);
+
+                    const matchHistoryList = await Promise.all(
+                        matchIdListData.map((m) => {
+                            return getMatchInfo(m, summonerJsonData);
+                        })
+                    );
+
+                    const newMatchList = await db.addNewMatchHistory(
+                        summonerJsonData.name,
+                        matchHistoryList
+                    );
+
+                    setCurrentMatchNum(matchCount);
+                    setNewMatchData(newMatchList);
+                    setLastestMatch(matchIdListData[0]);
                     break;
                 }
             }
-
-            matchIdListData = await riot.getMatchIdList(
-                summonerJsonData.puuid,
-                matchStart,
-                checkNum
-            );
-
-            matchIdListData.reverse();
-
-            const matchHistoryList = await Promise.all(
-                matchIdListData.map((m) => {
-                    return getMatchInfo(m, summonerJsonData);
-                })
-            );
-
-            const newMatchList = await db.addNewMatchHistory(
-                summonerJsonData.name,
-                matchHistoryList
-            );
-
-            setCurrentMatchNum(currentMatchNum + matchIdListData.length);
-            setNewMatchData(newMatchList);
         }
 
         const rankData = await riot.getSummonerLeague(summonerJsonData.id);
@@ -408,9 +423,10 @@ function Summoners() {
         const token = tokenStorage.getToken();
 
         db.isValidToken(token).then((res) => {
-            console.log("sds: " + res);
-            setUserName(res);
-            setIsLogin(true);
+            if (res !== undefined) {
+                setUserName(res);
+                setIsLogin(true);
+            }
         });
     };
 
@@ -470,9 +486,9 @@ function Unix_timestamp(t) {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    const second = date.getSeconds();
+    // const hour = date.getHours();
+    // const minute = date.getMinutes();
+    // const second = date.getSeconds();
 
     return year + "-" + month + "-" + day;
 }
@@ -489,9 +505,9 @@ function calcPlayedTime(gStartTime, gEndTime) {
     // 플레이 시간중 시 구하기
     const pHours = get.getHours() - gst.getHours();
     // 게임 시작 날짜 중 일
-    const gsDays = gst.getDay();
+    // const gsDays = gst.getDay();
     // 게임 종료 날짜 중 일
-    const geDays = get.getDay();
+    // const geDays = get.getDay();
 
     let resultSeconds;
     let resultMinutes;

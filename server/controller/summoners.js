@@ -41,7 +41,8 @@ export async function saveSummonerInfo(req, res, next) {
 
     for (const r in rankData) {
         if (rankData[r].queueType === "RANKED_SOLO_5x5") soloRank = rankData[r];
-        else flexRank = rankData[r];
+        else if (rankData[r].queueType === "RANKED_FLEX_SR")
+            flexRank = rankData[r];
     }
 
     const mList = await saveMatchHistroy(matchHistoryList);
@@ -68,7 +69,7 @@ export async function saveSummonerInfo(req, res, next) {
         matchList: mList,
     });
 
-    const summ = await userRepository.findById(summId);  
+    const summ = await userRepository.findById(summId);
 
     return res.status(201).json(summ);
 }
@@ -78,6 +79,20 @@ export async function getSummonerInfo(req, res, next) {
     const summonerName = decodeURIComponent(req.headers.summonername);
 
     const summoner = await userRepository.findBySummonerName(summonerName);
+
+    // summoner.matchList.forEach(i => {
+    //     console.log("i: ", i);
+    //     if (i === null) {
+    //         let pos = summoner.matchList.indexOf(i);
+    //         summoner.matchList.splice(pos, 1);
+    //     }
+    // });
+
+    // for (let i = 0; i < 6; i++){
+    //     summoner.matchList.shift();
+    // }
+
+    summoner.save();
 
     return res.status(200).json(summoner);
 }
@@ -89,7 +104,10 @@ export async function checkMatchHistory(req, res, next) {
 
     const matchList = summoner.matchList;
 
-    const sliceMatchList = matchList.slice(start, (parseInt(start) + parseInt(count)));
+    const sliceMatchList = matchList.slice(
+        start,
+        parseInt(start) + parseInt(count)
+    );
 
     return res.status(200).json(sliceMatchList);
 }
@@ -116,7 +134,26 @@ export async function addNewMatchHistory(req, res, next) {
     const summoner = await userRepository.findBySummonerName(summonerName);
 
     mList.reverse();
+    // console.log("mList: ", mList);
+    for (const m in mList) {
+        for (const sm in summoner.matchList) {
+            console.log("summoner.matchId: " + summoner.matchList[sm].matchId);
+            console.log("mList.matchId: " + mList[m].matchId);
+            console.log("===================================");
+            if (mList[m].matchId === summoner.matchList[sm].matchId) {
+                summoner.matchList.splice(sm, 1);
+                const del = await userRepository.deleteHistory(
+                    mList[m].matchId
+                );
+                console.log("del: ", del);
+                break;
+            }
+        }
+    }
+
     summoner.matchList = mList.concat(summoner.matchList);
+
+    // console.log("mList2: ", mList);
 
     summoner.save();
     mList.reverse();
@@ -152,8 +189,7 @@ export async function updateRankData(req, res, next) {
             soloRank.soloRankLP = rankData[r].leaguePoints;
             soloRank.soloRankWinNum = rankData[r].wins;
             soloRank.soloRankLoseNum = rankData[r].losses;
-        }
-        else {
+        } else if (rankData[r].queueType === "RANKED_FLEX_SR") {
             flexRank.flexRankQueueType = rankData[r].queueType;
             flexRank.flexRankTier = rankData[r].tier;
             flexRank.flexRankRank = rankData[r].rank;
@@ -168,8 +204,18 @@ export async function updateRankData(req, res, next) {
     const result = await userRepository.updateRank(summonerName, rank);
 
     return res.status(200).json(result);
+}
 
-    
+export async function getLastMatch(req, res, next) {
+    const summonerName = decodeURIComponent(req.headers.name);
+
+    console.log("lm summonerName: " + summonerName);
+    const summoner = await userRepository.findBySummonerName(summonerName);
+
+    const lastMatchId = summoner.matchList[0].matchId;
+    console.log("lastMatchId: " + lastMatchId);
+
+    return res.status(200).json(lastMatchId);
 }
 
 async function saveMatchHistroy(matchHistoryList) {
