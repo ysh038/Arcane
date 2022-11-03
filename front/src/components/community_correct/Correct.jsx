@@ -124,7 +124,7 @@ function Correcting(props) {
         }
     };
 
-    // 이미지 dragenter시
+    // 이미지 dragenter시 !!!!
     const dragenter = (e) => {
         e.stopPropagation();
         e.preventDefault();
