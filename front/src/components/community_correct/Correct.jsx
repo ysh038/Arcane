@@ -187,6 +187,7 @@ function Correcting(props) {
         if (text === "") {
             alert("내용을 작성해주세요.");
         } else if (isLogin) {
+            console.log(text);
             await axios
                 .put("/post/correct", {
                     title: title,
@@ -240,7 +241,7 @@ function Correcting(props) {
 
     useEffect(() => {
         isValidToken();
-    });
+    }, []);
 
     return (
         <div className={style.postingContainer}>
