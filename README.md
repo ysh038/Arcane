@@ -53,7 +53,21 @@ Server 부분은 자바스크립트 RunTime인 Node.js와 그의 프레임워크
 Arcane 페이지의 작동방식은 Client, Server, DB간의 상호작용으로 이루어져있습니다.
 
 ### 로그인,회원가입 Process
+```mermaid
+sequenceDiagram
+Client->> Server: 개인정보 입력 후 회원가입요청
+Server->>DB: 패스워드 Bcrypt로 암호화 후 DB에 저장
+Note right of DB: 회원가입 완료
+DB->>Server: 회원가입 요청이 올바르게 종료됐음을 응답
+Server->>Client: 회원가입 완료를 응답
 
+Client->> Server: 로그인 요청
+Server->> DB: 입력한 정보를 Bcrypt의 decode메소드로 해독, 존재하는 사용자인지 확인요청
+Note right of DB: 입력한 정보를 가진 사용자가 있음을 확인
+DB->>Server: 로그인 수락
+Server->>Client: 로그인 수락
+```
+### 전적 검색 Process
 ```mermaid
 sequenceDiagram
 Client->> Server: 개인정보 입력 후 회원가입요청
@@ -69,15 +83,6 @@ DB->>Server: 로그인 수락
 Server->>Client: 로그인 수락
 ```
 
-And this will produce a flow chart:
-
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
-```
 
 # 파일
 
@@ -111,8 +116,10 @@ $$
 > You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
 
 <br/>
+
 <a name="footnote_1">[1]</a> 《리그 오브 레전드》는 라이엇 게임즈에서 개발 및 서비스하는 멀티플레이어 온라인 배틀 아레나 비디오 게임이다.
 <br/>
+
 <a name="footnote_2">[2]</a> 라이엇 게임즈(Riot Games)는 미국의 게임 개발 회사이다. 캘리포니아주 산타 모니카에 본사를 두고 있다. 2008년 10월 첫 개발작 '리그 오브 레전드: 운명의 충돌'을 발표했고 2009년 10월에 '리그 오브 레전드'라는 이름으로 게임을 발매한 이후 운영하고 있다.
 <br/>
 <a name="footnote_3">[3]</a> React는 프레임워크가 아니라 라이브러리이다.
