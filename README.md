@@ -72,8 +72,9 @@ Server->>Client: 로그인 수락
 ```mermaid
 sequenceDiagram
 Client->> Server: 개인정보 입력 후 회원가입요청
+Note right of Server : Client와 Server간 통신은 Axios를 통해서
 Server->>DB: 패스워드 Bcrypt로 암호화 후 DB에 저장
-Note right of DB: 회원가입 완료
+Note right of Server: 회원가입 완료
 DB->>Server: 회원가입 요청이 올바르게 종료됐음을 응답
 Server->>Client: 회원가입 완료를 응답
 
@@ -85,11 +86,12 @@ Server->>Client: 로그인 수락
 ```
 
 
-# 파일
+# 주요 파일
 
-The file explorer is accessible using the button in left corner of the navigation bar. You can create a new file by clicking the **New file** button in the file explorer. You can also create folders by clicking the **New folder** button.
+Arcane페이지가 동작하는데 있어서 중요한 역할을 하는 코드 몇가지
 
-
+![image](https://user-images.githubusercontent.com/71204343/200112702-c5260669-148b-462c-ade6-72a892be927d.png)
+Client에서 Server에 Axios로 요청하는 부분입니다. then을 통해서 Server의 응답을 비동기로 받습니다.
 
 
 
