@@ -91,6 +91,7 @@ Server->>Client: 로그인 수락
 Arcane페이지가 동작하는데 있어서 중요한 역할을 하는 코드 몇가지
 
 ![image](https://user-images.githubusercontent.com/71204343/200112702-c5260669-148b-462c-ade6-72a892be927d.png)
+   <br/>
 Client에서 Server에 Axios로 요청하는 부분입니다. then을 통해서 Server의 응답을 비동기로 받습니다.
 
 
