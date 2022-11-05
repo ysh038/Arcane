@@ -51,6 +51,7 @@ Server 부분은 자바스크립트 RunTime인 Node.js와 그의 프레임워크
 # 페이지 작동 방식
 
 Arcane 페이지의 작동방식은 Client, Server, DB간의 상호작용으로 이루어져있습니다.
+다음은 Client, Server, DB의 간단한 Request,Response 구조입니다.
 
 ### 로그인,회원가입 Process
 ```mermaid
@@ -67,7 +68,7 @@ Note right of DB: 입력한 정보를 가진 사용자가 있음을 확인
 DB->>Server: 로그인 수락
 Server->>Client: 로그인 수락
 ```
-### 전적 검색 Process
+### 전적 검색 Process 은 아직 안함
 ```mermaid
 sequenceDiagram
 Client->> Server: 개인정보 입력 후 회원가입요청
