@@ -36,6 +36,7 @@
  <br/>
  <br/>
  <br/>
+ <div/>
 
 # :computer:실행환경
 프로젝트 제작과 실행은 2인이서 진행하였는데, 모두 윈도우 OS환경에서 실행했습니다.
@@ -91,35 +92,52 @@ Server->>Client: 로그인 수락
 Arcane페이지가 동작하는데 있어서 중요한 역할을 하는 라이브러리 몇가지가 있습니다.
 다음은 중요하면서 자주사용된 라이브러리들 입니다.  
 
-### Axios
+## Axios
 Client와 Server의 비동기 통신을 위한 Promise 기반 라이브러리입니다.
+
 **여기에 Login_main.jsx사진**
+
 클라이언트에서 서버로 요청을 보낼 때 POST, GET, PUT, DELETE 이 4가지의 메소드를 가지고 CRUD를 할 수 있습니다. 서버에서도 마찬가지로 각각의 요청에 대해 응답을 해줍니다.
+
 **여기에 app.js사진**
+
 **아무 라우터 사진**
+
 Server에선 Routing을 통해 시각적으로 정돈되어보일 뿐 아니라, 개발과 유지보수에 불편함을 줄였습니다.
 
 **Axios**는 Promise를 리턴하기 때문에, **Arcane** 웹 페이지에서 Client와 Server간 통신은 대부분 이렇게 비동기로 이루어집니다.
 따라서, Client가 Server에 뭔가 요청한 후에 Server의 응답을 기다린 후 진행합니다.
 
-### bcrypt, JWT
+## bcrypt, jwt
 Blowfish 암호를 기반으로 설계된 암호화 함수이며 현재까지 사용중인 가장 강력한 해시 메커니즘 중 하나입니다.
-Client에서 회원가입을 요청했을 때, DB에 패스워드 원본으로 저장한다면 보안 문제가 있을것입니다.  
+Client에서 회원가입을 요청했을 때, DB에 패스워드 원본으로 저장한다면 보안 문제가 있을것입니다. 
+
 **auth.js 사진**
+
 **bcrypt**의 hash메소드를 이용해서, 입력받은 패스워드를 암호화합니다. 
 파라메터로 SaltingRounds라는 것을 보내주는 것을 볼 수 있습니다. Salting은 사용자가 보낸 비밀번호에 난수까지 추가하여 해시함수에 집어넣는 것입니다. Salt를 적용하여 나온 해시에다가, 다시 동일한 Salt을 적용하여 한번 더 해시를 도출하고, 이걸 계속 반복시키는 행위를  Salting Rounds라고 합니다. **Arcane**에서는 12로 값을 할당했습니다.
-이렇게 암호화한 패스워드를 **JSONWebToken**의 createJwtToken메소드를 이용해 
 
-## SmartyPants
+이렇게 암호화한 패스워드를 **jsonwebtoken**의 createJwtToken메소드를 이용해, **검증된** 토큰을 생성해서 Client에 돌려준다. 그리고, Client는 서버로부터 받은 **인증된 토큰**을 LocalStorage에 가지고있다가,**여기에 local storage 사진** 무언가 서버에 요청할 때, 이 **인증된 토큰**을 함께 Header 등에 넣음으로 로그인 된(Authenticated)사용자 임을 Server에 알린다.
 
-SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
-
-|                |ASCII                          |HTML                         |
+## mongoDB, mongoose
+**mongoDB**는 noSQL 데이터베이스입니다. noSQL은 'Non Relational Operation Database SQL'의 줄임말로써 기존의 관계지향형 데이터베이스가 아닌 데이터베이스들을 의미합니다. noSQL DB에 대한 경험이 없어, 다양한 경험을 쌓고자 **mongoDB**를 선택했는데, 장점과 단점이 명확했습니다. 
+|                |NOSQL                          |SQL						   |
 |----------------|-------------------------------|-----------------------------|
-|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
-|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
-|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
+|스키마			 |`없음 `           				 |`있음`            		 	   |
+|참조 무결성		 |`보장안함   `         			 |`보장`            			   |
+|속도			 |`비교적 빠름`					 |`비교적 느림`				   |
+|확장			 |`수평/수직적 확장에 용이`		 |`보통 수직적 확장`			   |
+처음 noSQL로 서버와 데이터베이스 간 구조를 만들 땐, noSQL이 유연하고 간편해서 편리했습니다. 하지만, 생각보다 데이터간 참조가 많고 변경될 때도 많아서, 모든 Collection을 일일이 수정해야하는 일이 생겼습니다. 이에 프로젝트 진행시에 어떤 데이터베이스를 사용할지 쉽게 정해선 안 될것임을 생각했습니다.
 
+**mongoDB**는 스키마가 없는 형태라고 했는데, Node.js에서 model이라는 mongoDB api로 스키마와 유사한 형태를 이룰 수 있습니다. 
+**스키마 사진**
+
+**mongoose**는 Server(Node.js)와 DB(mongoDB)를 연결시켜주는 ODM<sup>[[4]](#footnote_4)</sup>입니다.  **mongoose**덕분에 Node.js에서 **mongoDB**와 상호작용하기가 매우 편리했습니다. 
+**mongoose 예시 사진**
+**mongoose**의 메소드를 사용하는 것 만으로 데이터베이스에 접근해, 데이터를 가져오거나 추가하고 삭제하는 것이 가능했습니다.
+
+## Riot API
+Arcane 웹 페이지의 핵심적인 존재입니다. 어쩌구 저쩌구
 
 ## KaTeX
 
@@ -142,3 +160,6 @@ $$
 <br/>
 
 <a name="footnote_3">[3]</a> React는 프레임워크가 아니라 라이브러리이다.
+<br/>
+
+<a name="footnote_4">[4]</a> ODM(Object Document Mapping) : 객체와 문서를 1대1로 매칭하는 역할
