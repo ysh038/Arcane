@@ -36,7 +36,7 @@
  <br/>
  <br/>
  <br/>
- <div/>
+</div>
 
 # :computer:실행환경
 프로젝트 제작과 실행은 2인이서 진행하였는데, 모두 윈도우 OS환경에서 실행했습니다.
@@ -87,21 +87,79 @@ Server->>Client: 로그인 수락
 ```
 
 
-# 라이브러리
+# :books:라이브러리
 
 Arcane페이지가 동작하는데 있어서 중요한 역할을 하는 라이브러리 몇가지가 있습니다.
 다음은 중요하면서 자주사용된 라이브러리들 입니다.  
 
 ## Axios
 Client와 Server의 비동기 통신을 위한 Promise 기반 라이브러리입니다.
-
-**여기에 Login_main.jsx사진**
-
+```
+await axios
+  .get("/auth/login", {
+      params: {
+          username: inputUsername,
+          password: inputPassword,
+      },
+  }) //
+  .then((res) => {
+      token.saveToken(res.data.token);
+      window.location.replace("/");
+  })
+  .catch((err) => {
+      console.log(err);
+      if (err.response.status === 401) {
+          alert("아이디(비밀번호)가 틀렸습니다");
+      } else {
+          alert("로그인에 실패했습니다.");
+      }
+  });
+```
 클라이언트에서 서버로 요청을 보낼 때 POST, GET, PUT, DELETE 이 4가지의 메소드를 가지고 CRUD를 할 수 있습니다. 서버에서도 마찬가지로 각각의 요청에 대해 응답을 해줍니다.
 
-**여기에 app.js사진**
+```
+// 회원가입 & 로그인 & 유저관련 디비 설정
+app.use("/auth", authRouter);
 
-**아무 라우터 사진**
+// 글 작성
+app.use("/post", postRouter);
+
+// 유저 전적 검색
+app.use("/api/summoners", summonersRouter);
+
+// 내 정보
+app.use("/api/mypage", mypageRouter);
+
+// 위의 라우터 모두 충족하지 않을경우
+app.use((req, res, next) => {
+    res.sendStatus(404);
+});
+
+// 에러 발생시
+app.use((error, req, res, next) => {
+    console.error("error: " + error);
+    res.sendStatus(500);
+});
+```
+```
+const router = express.Router();
+
+router.get("/", authController.me);
+
+router.get("/info", authController.IsExistFromClient);
+
+router.get("/login", authController.login);
+
+router.get("/check", authController.checkMarking);
+
+router.get("/exist", authController.IsExistFromClient);
+
+router.post("/signup", authController.signup);
+
+router.post("/marking", authController.bookMarking);
+
+export default router;
+```
 
 Server에선 Routing을 통해 시각적으로 정돈되어보일 뿐 아니라, 개발과 유지보수에 불편함을 줄였습니다.
 
@@ -109,12 +167,33 @@ Server에선 Routing을 통해 시각적으로 정돈되어보일 뿐 아니라,
 따라서, Client가 Server에 뭔가 요청한 후에 Server의 응답을 기다린 후 진행합니다.
 
 ## bcrypt, jwt
-Blowfish 암호를 기반으로 설계된 암호화 함수이며 현재까지 사용중인 가장 강력한 해시 메커니즘 중 하나입니다.
-Client에서 회원가입을 요청했을 때, DB에 패스워드 원본으로 저장한다면 보안 문제가 있을것입니다. 
+Client에서 회원가입을 요청했을 때, DB에 패스워드 원본으로 저장한다면 보안 문제가 있을것입니다. **bcrypt**는 Blowfish 암호를 기반으로 설계된 암호화 함수이며 현재까지 사용중인 가장 강력한 해시 메커니즘 중 하나입니다. 이를 통해, 패스워드를 원본 그대로 저장하지 않고 암호화한 상태로 저장합니다.
 
-**auth.js 사진**
+```
+// 데이터베이스의 사용자 정보들과 조회 하여 일치하는거 찾기
+    const user = await userRepository.findByUsername(username);
 
-**bcrypt**의 hash메소드를 이용해서, 입력받은 패스워드를 암호화합니다. 
+    // 존재하는 유저라면 해당 유저의 비밀번호가 맞는지 체크
+    if (!user) {
+        console.log("아이디가 존재하지 않습니다.");
+        return res.status(401).json({ message: "Invalid user or password" });
+    }
+
+    // 유저 존재시 비번 체크
+    // bcrypt의 compare을 사용하여 우리 데이터베이스에 저장된 hash버전의
+    // password와 사용자가 입력한 password가 동일한지를 검사
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+        //비번 틀릴시
+        return res.status(401).json({ message: "Invalid user or password" });
+    }
+
+    // userRepository에서 받아온 사용자 고유 id로 토큰을 만듬
+    const token = createJwtToken(user.id);
+    res.status(201).json({ token, username });
+```
+
+**bcrypt**의 hash메소드를 이용해서, 입력받은 패스워드를 암호화합니다.
 파라메터로 SaltingRounds라는 것을 보내주는 것을 볼 수 있습니다. Salting은 사용자가 보낸 비밀번호에 난수까지 추가하여 해시함수에 집어넣는 것입니다. Salt를 적용하여 나온 해시에다가, 다시 동일한 Salt을 적용하여 한번 더 해시를 도출하고, 이걸 계속 반복시키는 행위를  Salting Rounds라고 합니다. **Arcane**에서는 12로 값을 할당했습니다.
 
 이렇게 암호화한 패스워드를 **jsonwebtoken**의 createJwtToken메소드를 이용해, **검증된** 토큰을 생성해서 Client에 돌려준다. 그리고, Client는 서버로부터 받은 **인증된 토큰**을 LocalStorage에 가지고있다가,**여기에 local storage 사진** 무언가 서버에 요청할 때, 이 **인증된 토큰**을 함께 Header 등에 넣음으로 로그인 된(Authenticated)사용자 임을 Server에 알린다.
@@ -127,29 +206,108 @@ Client에서 회원가입을 요청했을 때, DB에 패스워드 원본으로 �
 |참조 무결성		 |`보장안함   `         			 |`보장`            			   |
 |속도			 |`비교적 빠름`					 |`비교적 느림`				   |
 |확장			 |`수평/수직적 확장에 용이`		 |`보통 수직적 확장`			   |
+
 처음 noSQL로 서버와 데이터베이스 간 구조를 만들 땐, noSQL이 유연하고 간편해서 편리했습니다. 하지만, 생각보다 데이터간 참조가 많고 변경될 때도 많아서, 모든 Collection을 일일이 수정해야하는 일이 생겼습니다. 이에 프로젝트 진행시에 어떤 데이터베이스를 사용할지 쉽게 정해선 안 될것임을 생각했습니다.
 
 **mongoDB**는 스키마가 없는 형태라고 했는데, Node.js에서 model이라는 mongoDB api로 스키마와 유사한 형태를 이룰 수 있습니다. 
-**스키마 사진**
+```
+e: String } }],
+});
 
+const userSchema = new Mongoose.Schema({
+    username: { type: String, required: true },
+    password: { type: String, require: true },
+    email: { type: String, require: true },
+    signupDate: { type: Date, default: Date.now }, // 회원가입 일시
+    postlike: [postSchema],
+    bookMark: [],
+});
+
+const matchHistorySchema = new Mongoose.Schema({
+    matchId: { type: String, required: true },
+    summonerName: { type: String, required: true },
+    queueType: { type: String, required: true },
+    result: { type: String, required: true },
+    queueDate: { type: String, required: true },
+    champion: { type: String, required: true },
+    championLevel: { type: Number, required: true },
+    spell1: { type: String, required: true },
+    spell2: { type: String, required: true },
+    mainRune: { type: String, required: true },
+    subRune: { type: String, required: true },
+    item0: { type: String },
+    item1: { type: String },
+    item2: { type: String },
+    item3: { type: String },
+    item4: { type: String },
+    item5: { type: String },
+    item6: { type: String },
+    kills: { type: Number, reqired: true },
+    deaths: { type: Number, reqired: true },
+    assists: { type: Number, reqired: true },
+    kda: { type: String },
+    cs: { type: Number, reqired: true },
+    time: { type: String, reqired: true },
+    participants: [
+        {
+            summonerName: String,
+            champion: String,
+        },
+    ],
+});
+
+const summonerSchema = new Mongoose.Schema({
+    summonerName: { type: String, required: true },
+    profileIconId: { type: Number, required: true },
+    level: { type: Number, required: true },
+
+    soloRankQueueType: { type: String, required: true },
+    soloRankTier: { type: String, required: true },
+    soloRankRank: { type: String },
+    soloRankLP: { type: Number, required: true },
+    soloRankWinNum: { type: Number, required: true },
+    soloRankLoseNum: { type: Number, required: true },
+
+    flexRankQueueType: { type: String, required: true },
+    flexRankTier: { type: String, required: true },
+    flexRankRank: { type: String },
+    flexRankLP: { type: Number, required: true },
+    flexRankWinNum: { type: Number, required: true },
+    flexRankLoseNum: { type: Number, required: true },
+
+    matchList: [matchHistorySchema],
+});
+
+export const User = Mongoose.model("User", userSchema);
+export const Post = Mongoose.model("Post", postSchema);
+export const Comment = Mongoose.model("Comment", commentSchema);
+export const MatchHistory = Mongoose.model("MatchHistory", matchHistorySchema);
+export const Summoner = Mongoose.model("Summoner", summonerSchema);
+```
 **mongoose**는 Server(Node.js)와 DB(mongoDB)를 연결시켜주는 ODM<sup>[[4]](#footnote_4)</sup>입니다.  **mongoose**덕분에 Node.js에서 **mongoDB**와 상호작용하기가 매우 편리했습니다. 
-**mongoose 예시 사진**
+```
+import { User } from "../model/schema.js";
+
+// 사용자 아이디로 찾기
+export async function findByUsername(username) {
+    return User.findOne({ username });
+}
+
+export async function findById(id) {
+    return User.findById(id);
+}
+
+export async function createUser(user) {
+    return new User(user)//
+        .save()
+        .then((data) => data.id)
+        .catch((err) => console.log(err));
+}
+```
 **mongoose**의 메소드를 사용하는 것 만으로 데이터베이스에 접근해, 데이터를 가져오거나 추가하고 삭제하는 것이 가능했습니다.
 
 ## Riot API
 Arcane 웹 페이지의 핵심적인 존재입니다. 어쩌구 저쩌구
-
-## KaTeX
-
-You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
 
 <br/>
 
