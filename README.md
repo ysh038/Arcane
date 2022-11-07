@@ -37,7 +37,7 @@
  <br/>
  <br/>
 
-# 실행환경
+# :computer:실행환경
 프로젝트 제작과 실행은 2인이서 진행하였는데, 모두 윈도우 OS환경에서 실행했습니다.
 
 Client 부분은 JavaScript의 라이브러리<sup>[[3]](#footnote_3)</sup>인 React환경에서 개발, 실행했습니다.
@@ -48,7 +48,7 @@ Server 부분은 자바스크립트 RunTime인 Node.js와 그의 프레임워크
 
 데이터베이스는 No SQL 데이터베이스인 MongoDB를 사용했습니다.
 
-# 페이지 작동 방식
+# :factory:페이지 작동 방식
 
 Arcane 페이지의 작동방식은 Client, Server, DB간의 상호작용으로 이루어져있습니다.
 다음은 Client, Server, DB의 간단한 Request,Response 구조입니다.
@@ -86,15 +86,29 @@ Server->>Client: 로그인 수락
 ```
 
 
-# 주요 파일
+# 라이브러리
 
-Arcane페이지가 동작하는데 있어서 중요한 역할을 하는 코드 몇가지
+Arcane페이지가 동작하는데 있어서 중요한 역할을 하는 라이브러리 몇가지가 있습니다.
+다음은 중요하면서 자주사용된 라이브러리들 입니다.  
 
-![image](https://user-images.githubusercontent.com/71204343/200112702-c5260669-148b-462c-ade6-72a892be927d.png)
-   <br/>
-Client에서 Server로 Axios 통신을 요청하는 부분입니다. then을 통해서 Server의 응답을 비동기로 받습니다.
+### Axios
+Client와 Server의 비동기 통신을 위한 Promise 기반 라이브러리입니다.
+**여기에 Login_main.jsx사진**
+클라이언트에서 서버로 요청을 보낼 때 POST, GET, PUT, DELETE 이 4가지의 메소드를 가지고 CRUD를 할 수 있습니다. 서버에서도 마찬가지로 각각의 요청에 대해 응답을 해줍니다.
+**여기에 app.js사진**
+**아무 라우터 사진**
+Server에선 Routing을 통해 시각적으로 정돈되어보일 뿐 아니라, 개발과 유지보수에 불편함을 줄였습니다.
 
+**Axios**는 Promise를 리턴하기 때문에, **Arcane** 웹 페이지에서 Client와 Server간 통신은 대부분 이렇게 비동기로 이루어집니다.
+따라서, Client가 Server에 뭔가 요청한 후에 Server의 응답을 기다린 후 진행합니다.
 
+### bcrypt, JWT
+Blowfish 암호를 기반으로 설계된 암호화 함수이며 현재까지 사용중인 가장 강력한 해시 메커니즘 중 하나입니다.
+Client에서 회원가입을 요청했을 때, DB에 패스워드 원본으로 저장한다면 보안 문제가 있을것입니다.  
+**auth.js 사진**
+**bcrypt**의 hash메소드를 이용해서, 입력받은 패스워드를 암호화합니다. 
+파라메터로 SaltingRounds라는 것을 보내주는 것을 볼 수 있습니다. Salting은 사용자가 보낸 비밀번호에 난수까지 추가하여 해시함수에 집어넣는 것입니다. Salt를 적용하여 나온 해시에다가, 다시 동일한 Salt을 적용하여 한번 더 해시를 도출하고, 이걸 계속 반복시키는 행위를  Salting Rounds라고 합니다. **Arcane**에서는 12로 값을 할당했습니다.
+이렇게 암호화한 패스워드를 **JSONWebToken**의 createJwtToken메소드를 이용해 
 
 ## SmartyPants
 
