@@ -1,7 +1,8 @@
+
 ![Header](https://capsule-render.vercel.app/api?type=waving&color=4AA8D8&height=200&section=header&text=Arcane&fontSize=60)
 
 본 프로젝트는 [riot API](https://developer.riotgames.com/)를 활용한 [League Of Legends](https://www.leagueoflegends.com/) 게임의 전적 검색 웹 페이지 입니다.
-**Node.js**와 **데이터베이스**를 활용한 첫 프로젝트 이기에, 전적 검색 외에도 **Node.js**와 **데이터베이스**를 상호 활용한 기능을 최대한 많이 구현해보았습니다.
+**Node.js**와 **데이터베이스**를 활용한 첫 프로젝트 이기에, 전적 검색 외에도 **Node.js**와 **데이터베이스**를 상호 활용한 기능을 최대한 구현해보았습니다.
 
 **League of Legends**는 전세계에서 가장 많은 사람들이 즐기는 게임이라고 해도 과언이 아닙니다.
 때문에, 이 게임의 각종 통계치를 보여주는 전적 검색사이트들이 실제로 많이 서비스되고있습니다.
@@ -54,14 +55,15 @@ Server 부분은 자바스크립트 RunTime인 Node.js와 그의 프레임워크
 Arcane 페이지의 작동방식은 Client, Server, DB간의 상호작용으로 이루어져있습니다.
 다음은 Client, Server, DB의 간단한 Request,Response 구조입니다.
 
-### 로그인,회원가입 Process
+### :key:로그인,회원가입 Process
 ```mermaid
 sequenceDiagram
 Client->> Server: 개인정보 입력 후 회원가입요청
 Server->>DB: 패스워드 Bcrypt로 암호화 후 DB에 저장
+Note right of Server : Client와 Server간 통신은 Axios를 통해서
 Note right of DB: 회원가입 완료
 DB->>Server: 회원가입 요청이 올바르게 종료됐음을 응답
-Server->>Client: 회원가입 완료를 응답
+Server->>Client: 회원가입 완료했음을 응답
 
 Client->> Server: 로그인 요청
 Server->> DB: 입력한 정보를 Bcrypt의 decode메소드로 해독, 존재하는 사용자인지 확인요청
@@ -69,23 +71,31 @@ Note right of DB: 입력한 정보를 가진 사용자가 있음을 확인
 DB->>Server: 로그인 수락
 Server->>Client: 로그인 수락
 ```
-### 전적 검색 Process 은 아직 안함
+### :mag_right:전적 검색 Process
 ```mermaid
 sequenceDiagram
-Client->> Server: 개인정보 입력 후 회원가입요청
-Note right of Server : Client와 Server간 통신은 Axios를 통해서
-Server->>DB: 패스워드 Bcrypt로 암호화 후 DB에 저장
-Note right of Server: 회원가입 완료
-DB->>Server: 회원가입 요청이 올바르게 종료됐음을 응답
-Server->>Client: 회원가입 완료를 응답
+Client->> Server: 이미 DB에 존재하는 사용자의 전적을 요청하는지 확인요청
+Server->> DB : Client가 요청한 사용자가 DB에 이미 존재하는지 확인
 
-Client->> Server: 로그인 요청
-Server->> DB: 입력한 정보를 Bcrypt의 decode메소드로 해독, 존재하는 사용자인지 확인요청
-Note right of DB: 입력한 정보를 가진 사용자가 있음을 확인
-DB->>Server: 로그인 수락
-Server->>Client: 로그인 수락
-```
+Note right of DB : 요청한 사용자가 존재한다면
+DB-->> Server : 요청한 사용자의 데이터 전달
+Server -->> Client : 요청한 사용자의 데이터 전달
+Note left of Client : 종료
 
+Note right of DB : 요청한 사용자가 없다면
+DB-->> Server : DB에 요청한 사용자가 없음을 알림
+Server-->>Client :  DB에 요청한 사용자가 없음을 알림
+
+Note left of Client: 사용자가 존재하지 않는다면 아래 실행
+Client->> Riot: api인증키를 사용해 riotAPI요청
+Riot->>Client: 인증키가 올바르다면 요청한 데이터 응답
+Note right of Client: 받은 데이터 client에게 보여줌
+
+Client->> Server: riotAPI에게 받은 데이터 전달
+Server->>DB: Client에게 받은 riot데이터 저장/가공 요청
+DB->>Server: 올바르게 처리됐음을 알림
+Server->>Client: 올바르게 처리됐음을 알림
+``` 
 
 # :books:라이브러리
 
@@ -307,9 +317,50 @@ export async function createUser(user) {
 **mongoose**의 메소드를 사용하는 것 만으로 데이터베이스에 접근해, 데이터를 가져오거나 추가하고 삭제하는 것이 가능했습니다.
 
 ## Riot API
-Arcane 웹 페이지의 핵심적인 존재입니다. 어쩌구 저쩌구
+Arcane 프로젝트를 시작하게 된 이유입니다. **Riot**사의 API를 사용하기 위해서는 API 인증키가 필요합니다. 해당 키는  [링크](https://developer.riotgames.com/)에서 로그인 후 발급받을 수 있습니다.  다음은 Riot API를 사용하는 예시입니다.
+```
+// riotAPI.js
 
-<br/>
+// 특정 소환사의 pid, ppuid 등의 정보 가져오기
+/**소환사명을 통해서 라이엇으로부터 해당 소환사 정보 불러오기 (id, puuid, account id, username, ....) */
+async  getSummoner(username)  {
+const  link  =  `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${username}?api_key=${this.#Riot_API_Key}`;
+const  json  =  await  getAPI(link);
+return json;
+}
+```
+해당API는 riotAPI.js 라는 파일에서 관리합니다. getSummoner함수에서 소환사명(**League of Legends**계정의 사용자명)을 받으면, RiotAPI를 호출하는 링크를 만듭니다. 링크에는 함수에서 파라메터로 받은 사용자명, 이전에 발급받은 API인증키 등이 사용됩니다. 
+```
+/**axios를 사용하여 해당 link의 api를 불러옴 */
+async  function  getAPI(link)  {
+	let data;
+	await axios
+		.get(link)
+		.then((res)  => (data = res.data))
+		.catch((err)  =>  {
+		throw err;
+	});
+	return data;
+}
+```
+getAPI함수는 파라메터로 넘겨준 링크를 사용합니다. 이전에 만든 링크를 통해, 실제로 RiotAPI에게 데이터를 받아옵니다. (Axios사용) 
+```
+getChampionIcon(champion_id)  {
+	if (champion_id ===  "FiddleSticks") champion_id =  "Fiddlesticks";
+	const link = `https://ddragon.leagueoflegends.com/cdn/${this.#Version}/img/champion/${champion_id}.png`;
+	return link;
+}	
+
+getSkillIcon(skill_id)  {
+	const  link  =  `https://ddragon.leagueoflegends.com/cdn/${this.#Version}/img/spell/${skill_id}.png`;
+	return link;
+}
+```
+API를 통해 이미지를 직접받아오는 함수들도 이런식으로 존재합니다.
+다른 컴포넌트나 페이지에서 riotAPI.js를 라이브러리처럼 활용해, 위 같은 함수들을 호출합니다. 이를 통해, **Riot**의 **League of Legends**서버 데이터를 활용해 Arcane 웹 페이지에서 보여줍니다.
+<br>
+
+## 
 
 <a name="footnote_1">[1]</a> 《리그 오브 레전드》는 라이엇 게임즈에서 개발 및 서비스하는 멀티플레이어 온라인 배틀 아레나 비디오 게임이다.
 <br/>
