@@ -1,4 +1,5 @@
 
+
 ![Header](https://capsule-render.vercel.app/api?type=waving&color=4AA8D8&height=200&section=header&text=Arcane&fontSize=60)
 
 본 프로젝트는 [riot API](https://developer.riotgames.com/)를 활용한 [League Of Legends](https://www.leagueoflegends.com/) 게임의 전적 검색 웹 페이지 입니다.
@@ -25,6 +26,8 @@
 <br/>
 <div align=center>  
 <h3>언어, 플랫폼<h3/>
+<img  src="https://img.shields.io/badge/html5-red?style=for-the-badge&logo=html5&logoColor=white">
+<img  src="https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=css3&logoColor=white">
 <img  src="https://img.shields.io/badge/Node.js-Green?style=for-the-badge&logo=node.js&logoColor=white">
  <img src="https://img.shields.io/badge/javaScript-yellow?style=for-the-badge&logo=javascript&logoColor=white">  
  <img src="https://img.shields.io/badge/react-skyblue?style=for-the-badge&logo=react&logoColor=white"> 
