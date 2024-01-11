@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "prettier": "prettier --write $INIT_CWD/**/*.js"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +32,7 @@
     "socket.io": "^4.5.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "prettier": "^3.1.1"
   }
 }

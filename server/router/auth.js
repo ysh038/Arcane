@@ -1,21 +1,21 @@
-import express from "express";
+import express from 'express'
 // import { User } from "../model/schema.js";
-import * as authController from "../controller/auth.js";
+import * as authController from '../controller/auth.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", authController.me);
+router.get('/', authController.me)
 
-router.get("/info", authController.IsExistFromClient);
+router.get('/info', authController.IsExistFromClient)
 
-router.get("/login", authController.login);
+router.get('/login', authController.login)
 
-router.get("/check", authController.checkMarking);
+router.get('/check', authController.checkMarking)
 
-router.get("/exist", authController.IsExistFromClient);
+router.get('/exist', authController.IsExistFromClient)
 
-router.post("/signup", authController.signup);
+router.post('/signup', authController.signup)
 
-router.post("/marking", authController.bookMarking);
+router.post('/marking', authController.bookMarking)
 
-export default router;
+export default router

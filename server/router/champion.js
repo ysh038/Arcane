@@ -1,10 +1,10 @@
-import express from "express";
-import "express-async-errors";
+import express from 'express'
+import 'express-async-errors'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", async (req, res, next) => {
-    res.send({ hi: "hello i'm champion router" });
-});
+router.get('/', async (req, res, next) => {
+  res.send({ hi: "hello i'm champion router" })
+})
 
-export default router;
+export default router

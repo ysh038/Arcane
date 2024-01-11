@@ -1,25 +1,25 @@
-import express from "express";
-import "express-async-errors";
-import * as summonersController from "../controller/summoners.js";
+import express from 'express'
+import 'express-async-errors'
+import * as summonersController from '../controller/summoners.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", summonersController.getRiotApi);
+router.get('/', summonersController.getRiotApi)
 
-router.get("/isin", summonersController.isSummoner);
+router.get('/isin', summonersController.isSummoner)
 
-router.get("/getinfo", summonersController.getSummonerInfo);
+router.get('/getinfo', summonersController.getSummonerInfo)
 
-router.get("/checkhistory", summonersController.checkMatchHistory);
+router.get('/checkhistory', summonersController.checkMatchHistory)
 
-router.get("/lastmatch", summonersController.getLastMatch);
+router.get('/lastmatch', summonersController.getLastMatch)
 
-router.post("/saveinfo", summonersController.saveSummonerInfo);
+router.post('/saveinfo', summonersController.saveSummonerInfo)
 
-router.post("/addhistory", summonersController.addMatchHistory);
+router.post('/addhistory', summonersController.addMatchHistory)
 
-router.post("/addnewhistory", summonersController.addNewMatchHistory);
+router.post('/addnewhistory', summonersController.addNewMatchHistory)
 
-router.patch("/updaterank", summonersController.updateRankData);
+router.patch('/updaterank', summonersController.updateRankData)
 
-export default router;
+export default router
